@@ -1,0 +1,194 @@
+openapi: 3.0.3
+info:
+  title: Swagger Condominios - OpenAPI 3.0
+  version: 1.0.0
+  description: 'Rest-api Sistema Condominios'
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: http://localhost:8080
+    description: Servidor local de prueba
+tags:
+  - name: Cliente
+    description: Datos del Cliente
+
+paths:
+  /Cliente/findById:
+    get:
+      tags: [Cliente]
+      summary: Busca cliente por ID
+      description: Obtiene un objeto con los datos del cliente.
+      operationId: FindClienteById
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: ID para filtrar al cliente.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200': 
+          description: Cliente encontrado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cliente'
+        '400': 
+          description: Solicitud inválida.
+        '404': 
+          description: Cliente no encontrado.
+        '500': 
+          description: Error interno del servidor.
+
+  /Cliente:
+    post:
+      tags: [Cliente]
+      summary: Crea un nuevo cliente
+      operationId: CreateCliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientePostRequest'
+      responses:
+        '201': 
+          description: Cliente creado exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Cliente creado con éxito."
+                  data:
+                    $ref: '#/components/schemas/Cliente'
+        '400': 
+          description: Solicitud inválida.
+        '500': 
+          description: Error interno del servidor.
+    put:
+      tags: [Cliente]
+      summary: Actualiza los datos de un cliente
+      operationId: UpdateCliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cliente'
+      responses:
+        '200': 
+          description: Cliente actualizado correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cliente'
+        '400': 
+          description: Solicitud incorrecta.
+        '404': 
+          description: Cliente no encontrado.
+        '500': 
+          description: Error interno del servidor.
+
+  /cliente/{ID_Cliente}:
+    delete:
+      tags: [Cliente]
+      summary: Elimina un cliente
+      operationId: DeleteCliente
+      parameters:
+        - name: ID_Cliente
+          in: path
+          required: true
+          description: ID único del cliente a eliminar
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200': 
+          description: Cliente eliminado correctamente.
+        '404': 
+          description: Cliente no encontrado.
+        '500': 
+          description: Error interno del servidor.
+
+  /clientes:
+    get:
+      tags: [Cliente]
+      summary: Obtiene todos los clientes
+      operationId: GetAllClientes
+      responses:
+        '200': 
+          description: Lista de clientes obtenida correctamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cliente'
+        '500': 
+          description: Error interno del servidor.
+
+components:
+  schemas:
+    Cliente:
+      type: object
+      properties:
+        ID_Cliente:
+          type: integer
+          format: int64
+          description: Identificador único del cliente.
+        Nombre:
+          type: string
+          maxLength: 20
+          description: Nombre del cliente.
+        Apellido:
+          type: string
+          maxLength: 20
+          description: Apellido del cliente.
+        Telefono:
+          type: string
+          maxLength: 13
+          pattern: '^\d{3}-\d{3}-\d{5}$'
+          description: Teléfono del cliente.
+        ClienteEmail:
+          type: string
+          format: email
+          maxLength: 32
+          description: Correo electrónico del cliente.
+      required:
+        - ID_Cliente
+        - Nombre
+        - Apellido
+        - Telefono
+        - ClienteEmail
+
+    ClientePostRequest:
+      type: object
+      properties:
+        Nombre:
+          type: string
+          maxLength: 20
+          description: Nombre del cliente.
+        Apellido:
+          type: string
+          maxLength: 20
+          description: Apellido del cliente.
+        Telefono:
+          type: string
+          maxLength: 13
+          pattern: '^\d{3}-\d{3}-\d{5}$'
+          description: Teléfono del cliente.
+        ClienteEmail:
+          type: string
+          format: email
+          maxLength: 32
+          description: Correo electrónico del cliente.
+      required:
+        - Nombre
+        - Apellido
+        - Telefono
+        - ClienteEmail
